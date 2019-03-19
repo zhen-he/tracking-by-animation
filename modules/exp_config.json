@@ -1,0 +1,9 @@
+
+{
+	"tba":         ["act"],
+    "tbac":        [],
+    "tbac_no_occ": ["no_occ"],
+    "tbac_no_mem": ["no_mem"],
+    "tbac_no_att": ["no_att"],
+    "tbac_no_rep": ["no_rep"],
+}
