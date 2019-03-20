@@ -1,12 +1,9 @@
-# Project Page for CVPR 2019 Submission 
-# Paper ID: 648
-
-
-Paper Title: **Tracking by Animation: Unsupervised Learning of Multi-Object Attentive Trackers**
+# Project Page for CVPR 2019 
+# Tracking by Animation: Unsupervised Learning of Multi-Object Attentive Trackers
 
 
 <!--
-The latest version of our paper is available at [**HERE**](https://github.com/anonymous-projects/tracking-by-animation).
+The latest version of our paper is available at [**HERE**](https://xxx).
 -->
 
 
