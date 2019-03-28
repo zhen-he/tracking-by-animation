@@ -62,8 +62,7 @@ The latest version of our paper is available at [**HERE**](https://xxx).
 #### b) Quantitative results
 |Configuration|IDF1&uarr;|IDP&uarr;|IDR&uarr;|MOTA&uarr;|MOTP&uarr;|FAF&darr;|MT&darr;|ML&darr;|FP&darr;|FN&darr;|IDS&darr;|Frag&darr;|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|TBA          |82.0      |85.0     |79.2     |78.0      |80.0      |0.11     |1018     |40      |79,402  |152,336 |803      |1,466     |
-
+|TBA      |82.4      |86.1     |79.0     |79.6      |80.4      |0.09     |1,026    |46      |64,002  |151,483 |875      |1,481     |
 Quantitative results are made public at [https://motchallenge.net/results/DukeMTMCT](https://motchallenge.net/results/DukeMTMCT) ('MOT\_TBA' with paper ID 648).
 
 
