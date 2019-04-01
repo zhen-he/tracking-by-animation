@@ -1,10 +1,12 @@
-# Project Page for CVPR 2019 
-## Tracking by Animation: Unsupervised Learning of Multi-Object Attentive Trackers
+# Tracking by Animation: Unsupervised Learning of Multi-Object Attentive Trackers
 
 
 <!--
 The latest version of our paper is available at [**HERE**](https://xxx).
 -->
+
+- [CVPR 2019 version](https://xxx) with its [appendix](https://xxx)
+- [arxiv version](https://xxx)
 
 
 ## 1. Results
