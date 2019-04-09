@@ -6,7 +6,7 @@ The latest version of our paper is available at [**HERE**](https://xxx).
 -->
 
 - [CVPR 2019 version](https://xxx) with its [appendix](https://xxx)
-- [arxiv version](https://xxx)
+- [arxiv version](https://arxiv.org/abs/1809.03137)
 
 
 ## 1. Results
