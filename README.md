@@ -8,7 +8,7 @@ The latest version of our paper is available at [**HERE**](https://xxx).
 - [CVPR 2019 version](https://xxx) with its [appendix](https://xxx)
 - [arxiv version](https://arxiv.org/abs/1809.03137)
 
-<font color="#FF0000">NOTE: a new implementation (with pytorch 1.0) will soon be available.</font>
+**NOTE: a new implementation (with pytorch 1.0) will soon be available.**
 
 ## 1. Results
 
