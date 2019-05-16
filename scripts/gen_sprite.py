@@ -194,7 +194,7 @@ def process_batch(states, batch_id):
                     # save for metric evaluation
                     if arg.metric == 1:
                         file.write("%d,%d,%.3f,%.3f,%.3f,%.3f,1,-1,-1,-1\n" % 
-                            (batch_id*T+t+1, states[o][8]+1, left-w, top-h, w_, h_))
+                            (batch_id*T+t+1, states[o][8]+1, left-w+1, top-h+1, w_, h_))
     return org_seq, states
 
 
