@@ -10,7 +10,6 @@ import torch
 import sys
 sys.path.append("modules")
 import utils
-# import torchvision.datasets as datasets
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--v', type=int, default=0)
@@ -39,7 +38,7 @@ eps = 1e-5
 txt_name = 'gt.txt'
 metric_dir = 'metric' if arg.metric == 1 else ''
 data_dir = path.join('data', task)
-input_dir = path.join(data_dir, 'processed')
+input_dir = path.join(data_dir, 'MNIST', 'processed')
 output_dir = path.join(data_dir, 'pt', metric_dir)
 output_input_dir = path.join(output_dir, 'input')
 utils.rmdir(output_input_dir); utils.mkdir(output_input_dir)
@@ -47,7 +46,9 @@ output_gt_dir = path.join(output_dir, 'gt')
 
 
 # mnist data
-# datasets.MNIST(root=data_dir, train=True, download=True)
+if not path.exists(input_dir):
+    import torchvision.datasets as datasets
+    datasets.MNIST(root=data_dir, train=True, download=True)
 train_data = torch.load(path.join(input_dir, 'training.pt')) # 60000 * 28 * 28
 test_data = torch.load(path.join(input_dir, 'test.pt')) # 10000 * 28 * 28
 data = torch.cat((train_data[0], test_data[0]), 0).unsqueeze(3) # 70000 * h * w * D
@@ -153,7 +154,7 @@ def process_batch(states, batch_id):
                     # save for metric evaluation
                     if arg.metric == 1:
                         file.write("%d,%d,%.3f,%.3f,%.3f,%.3f,1,-1,-1,-1\n" % 
-                            (batch_id*T+t+1, states[o][8]+1, left-w, top-h, w_, h_))
+                            (batch_id*T+t+1, states[o][8]+1, left-w+1, top-h+1, w_, h_))
     return org_seq, states
 
 
