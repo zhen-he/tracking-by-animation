@@ -8,7 +8,9 @@ The latest version of our paper is available at [**HERE**](https://xxx).
 - [CVPR 2019 version](https://xxx) with its [appendix](https://xxx)
 - [arxiv version](https://arxiv.org/abs/1809.03137)
 
-NOTE: a new implementation (with pytorch 1.1) will soon be available.
+**NOTE**:
+- A new implementation (with pytorch 1.1) will soon be available.
+- Recently the DukeMTMC website was disabled and would hopefully be recovered in the future.
 
 
 ## 1. Results
