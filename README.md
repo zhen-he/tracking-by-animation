@@ -1,7 +1,8 @@
 # Tracking by Animation: Unsupervised Learning of Multi-Object Attentive Trackers
 
-- [CVPR 2019 version](http://openaccess.thecvf.com/content_CVPR_2019/papers/He_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers_CVPR_2019_paper.pdf) with its [appendix](https://xxx)
-- [Full version](https://www.researchgate.net/profile/Zhen_He21/publication/332246376_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers/links/5ca98b864585157bd32878f1/Tracking-by-Animation-Unsupervised-Learning-of-Multi-Object-Attentive-Trackers.pdf?origin=publication_detail)
+- [CVPR 2019 version](http://openaccess.thecvf.com/content_CVPR_2019/html/He_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers_CVPR_2019_paper.html).
+- [Full version](https://www.researchgate.net/profile/Zhen_He21/publication/332246376_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers/links/5ca98b864585157bd32878f1/Tracking-by-Animation-Unsupervised-Learning-of-Multi-Object-Attentive-Trackers.pdf?origin=publication_detail) (with the appendix).
+
 
 **NOTE**:
 - A new implementation (with pytorch 1.1) will soon be available.
