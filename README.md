@@ -66,7 +66,7 @@
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |TBA      |82.4      |86.1     |79.0     |79.6      |80.4      |0.09     |1,026    |46      |64,002  |151,483 |875      |1,481     |
 
-Quantitative results are made public at [https://motchallenge.net/results/DukeMTMCT](https://motchallenge.net/results/DukeMTMCT) ('MOT\_TBA' with paper ID 648).
+Quantitative results are hosted at [https://motchallenge.net/results/DukeMTMCT](https://motchallenge.net/results/DukeMTMCT), where our TBA tracker is named as ‘MOT_TBA’.
 
 
 ## 2. Requirements
