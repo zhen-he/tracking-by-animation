@@ -14,7 +14,6 @@ class LossCalculator(nn.Module):
         self.o = o
         self.log = smd.Log()
         self.mse = nn.MSELoss(size_average=False)
-        self.mmd = smd.MMDLoss(sigmas=[0.01, 0.03, 0.1, 0.3, 1, 3])
         # self.bce_loss = nn.BCELoss(size_average=False)
 
 
