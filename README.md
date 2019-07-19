@@ -95,6 +95,7 @@ bash scripts/mts2jpg.sh 1                     # convert .mts files to .jpg files
 ./scripts/build_imbs.sh                       # build imbs for background extraction
 cd imbs/build
 ./imbs -c 1                                   # run imbs, please run over all cameras by setting c = 1, 2, ..., 8
+cd ../..
 python scripts/gen_duke_bb.py --c 1           # generate bounding box masks, please run over all cameras by setting c = 1, 2, ..., 8
 python scripts/gen_duke_bb_bg.py --c 1        # refine background images, please run over all cameras by setting c = 1, 2, ..., 8
 python scripts/gen_duke_roi.py                # generate roi masks
