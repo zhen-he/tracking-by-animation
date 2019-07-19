@@ -1,4 +1,4 @@
-# use ROIs, resize images, get input, bb, and bg
+# use ROIs, resize images, get input, and bg
 
 import os
 import os.path as path
@@ -39,7 +39,6 @@ roi_dir     = path.join(task_dir, 'calibration')
 output_dir           = path.join(task_dir, 'processed')
 output_input_dir     = path.join(output_dir, 'input', camera_dir)
 output_input_roi_dir = path.join(output_dir, 'input_roi', camera_dir)
-output_bb_dir        = path.join(output_dir, 'bb', camera_dir)
 output_bg_dir        = path.join(output_dir, 'bg', camera_dir)
 if arg.v == 0:
     utils.rmdir(output_input_dir);     utils.mkdir(output_input_dir)
