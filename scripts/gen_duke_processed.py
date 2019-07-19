@@ -44,7 +44,6 @@ output_bg_dir        = path.join(output_dir, 'bg', camera_dir)
 if arg.v == 0:
     utils.rmdir(output_input_dir);     utils.mkdir(output_input_dir)
     utils.rmdir(output_input_roi_dir); utils.mkdir(output_input_roi_dir)
-    utils.rmdir(output_bb_dir);        utils.mkdir(output_bb_dir)
     utils.rmdir(output_bg_dir);        utils.mkdir(output_bg_dir)
 
 
@@ -81,15 +80,6 @@ frame_num = len(img_names)
 roi_img = cv.imread(path.join(roi_dir, 'roi'+str(cam_id)+'_modified.jpg'), 0) # H * W
 roi_img = (roi_img > 127).astype('uint8')
 roi_img_r = roi_img.reshape((roi_img.shape[0], roi_img.shape[1], 1)) # H * W * 1
-for img_name in img_names:
-    img_id = int(path.splitext(img_name)[0])
-    if train_start <= img_id <= train_end:
-        bb_filename = path.join(bb_dir, str(img_id)+'.npy')
-        if path.isfile(bb_filename):
-            bb = np.load(bb_filename)
-            zeros = bb.copy()
-            zeros.fill(0)
-            break
 
 
 # Iteration
@@ -106,11 +96,9 @@ for i, img_name in enumerate(img_names, 1):
         if train_start <= img_id <= train_end:
             bb_filename = path.join(bb_dir, str(img_id)+'.npy')
             if path.isfile(bb_filename):
-                bb = np.load(bb_filename)
                 bb_bg_img = cv.imread(path.join(bb_bg_dir, img_name)) * roi_img_r
                 bg_img = cv.resize(bb_bg_img, (w, h))
             else:
-                bb = zeros
                 bg_img = input_roi_img
 
         # for test
@@ -133,7 +121,5 @@ for i, img_name in enumerate(img_names, 1):
             cv.imwrite(path.join(output_input_dir, img_name), input_img)
             cv.imwrite(path.join(output_input_roi_dir, img_name), input_roi_img)
             cv.imwrite(path.join(output_bg_dir, img_name), bg_img)
-            if train_start <= img_id <= train_end:
-                np.save(path.join(output_bb_dir, str(img_id)+'.npy'), bb)
 
     print(img_name, i, frame_num)

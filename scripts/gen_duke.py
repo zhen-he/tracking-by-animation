@@ -37,19 +37,16 @@ task_dir   = path.join('data', task)
 image_dir  = path.join(task_dir, 'processed')
 org_dir    = path.join(image_dir, 'input')
 input_dir  = path.join(image_dir, 'input_roi')
-bb_dir     = path.join(image_dir, 'bb')
 bg_dir     = path.join(image_dir, 'bg')
 camera_dir = '' if arg.c == -1 else 'camera'+str(arg.c)
 metric_dir = 'metric' if arg.metric == 1 else ''
 output_dir = path.join(task_dir, 'pt', camera_dir, metric_dir)
 output_org_dir   = path.join(output_dir, 'org')
 output_input_dir = path.join(output_dir, 'input')
-output_bb_dir    = path.join(output_dir, 'bb')
 output_bg_dir    = path.join(output_dir, 'bg')
 if arg.v == 0:
     utils.rmdir(output_org_dir);   utils.mkdir(output_org_dir)
     utils.rmdir(output_input_dir); utils.mkdir(output_input_dir)
-    utils.rmdir(output_bb_dir);    utils.mkdir(output_bb_dir)
     utils.rmdir(output_bg_dir);    utils.mkdir(output_bg_dir)
 
 
@@ -101,7 +98,7 @@ if arg.metric == 1:
 core_num = 1 if arg.metric == 1 else multiprocessing.cpu_count()
 print("Running with " + str(core_num) + " cores.")
 def process_batch(split, ST, s, n):
-    input_imgs, bg_imgs, org_imgs, bb_npys = [], [], [], []
+    input_imgs, bg_imgs, org_imgs = [], [], []
     for t in range(0, T):
         i = n * ST + s * T + t
         img_name  = path.join('camera'+str(cam_ids_total[split][i]), img_names_total[split][i])
@@ -115,19 +112,11 @@ def process_batch(split, ST, s, n):
         org_img = cv.imread(path.join(org_dir, img_name))
         org_imgs.append(torch.from_numpy(org_img))
 
-        if arg.metric == 0:
-            bb_npy = np.load(path.join(bb_dir, path.splitext(img_name)[0]+'.npy'))
-            bb_npys.append(torch.from_numpy(bb_npy))
-
     input_imgs = torch.stack(input_imgs, dim=0) # T * H * W * D
     bg_imgs    = torch.stack(bg_imgs, dim=0) # T * H * W * D
     org_imgs   = torch.stack(org_imgs, dim=0) # T * H * W * D
 
-    if arg.metric == 0:
-        bb_npys = torch.stack(bb_npys, dim=0) # T * O * 5
-        return input_imgs, bg_imgs, org_imgs, bb_npys
-    else:
-        return input_imgs, bg_imgs, org_imgs
+    return input_imgs, bg_imgs, org_imgs
 
 
 # Read image files and save them as torch tensors
@@ -158,10 +147,6 @@ with Parallel(n_jobs=core_num, backend="threading") as parallel:
 
                 org_batch_seq = org_batch_seq.permute(0, 1, 4, 2, 3) # N * T * D * H * W
                 torch.save(org_batch_seq, path.join(output_org_dir, filename))
-
-                if arg.metric == 0:
-                    bb_batch_seq = torch.stack(imgs_batch[3], dim=0) # N * T * O * 5
-                    torch.save(bb_batch_seq, path.join(output_bb_dir, filename))
 
             print(split + ': ' + str(s+1) + ' / ' + str(S))
 
