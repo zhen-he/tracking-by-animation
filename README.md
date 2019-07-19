@@ -1,6 +1,6 @@
 # Tracking by Animation: Unsupervised Learning of Multi-Object Attentive Trackers
 
-- [CVPR 2019 version](http://openaccess.thecvf.com/content_CVPR_2019/html/He_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers_CVPR_2019_paper.html) and the [poster](imgs/poster.pdf).
+- [CVPR 2019 version](http://openaccess.thecvf.com/content_CVPR_2019/html/He_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers_CVPR_2019_paper.html).
 - [Full version](https://www.researchgate.net/profile/Zhen_He21/publication/332246376_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers/links/5ca98b864585157bd32878f1/Tracking-by-Animation-Unsupervised-Learning-of-Multi-Object-Attentive-Trackers.pdf?origin=publication_detail) (with the appendix).
 
 
@@ -81,11 +81,25 @@ Quantitative results are hosted at [https://motchallenge.net/results/DukeMTMCT](
 
 ### 3.1 Generate training data
 
+Enter the project root directory `cd path/to/tba`.
+
+For mnist and sprite:
 ```
-cd path/to/tba                  # enter the project root directory
 python scripts/gen_mnist.py     # for mnist
 python scripts/gen_sprite.py    # for sprite
-python scripts/gen_duke.py      # for duke
+```
+
+For duke:
+```
+bash scripts/mts2jpg.sh 1                     # convert .mts files to .jpg files, please run over all cameras by setting the last argument to 1, 2, ..., 8
+./scripts/build_imbs.sh                       # build imbs for background extraction
+cd imbs/build
+./imbs -c 1                                   # run imbs, please run over all cameras by setting c = 1, 2, ..., 8
+python scripts/gen_duke_bb.py --c 1           # generate bounding box masks, please run over all cameras by setting c = 1, 2, ..., 8
+python scripts/gen_duke_bb_bg.py --c 1        # refine background images, please run over all cameras by setting c = 1, 2, ..., 8
+python scripts/gen_duke_roi.py                # generate roi masks
+python scripts/gen_duke_processed.py --c 1    # resize images, please run over all cameras by setting c = 1, 2, ..., 8
+python scripts/gen_duke.py                    # generate .pt files for training
 ```
 
 
