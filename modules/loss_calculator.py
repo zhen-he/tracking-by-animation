@@ -22,7 +22,11 @@ class LossCalculator(nn.Module):
         losses = {}
 
         # Reconstruction loss
-        loss_recon = self.mse(output, target)
+        if 'Y_b' in kwargs.keys():
+            Y_b = kwargs['Y_b']
+            loss_recon = self.mse(output, target) + self.mse((output - Y_b).abs(), (target - Y_b).abs())
+        else：
+            loss_recon = self.mse(output, target)
         loss = loss_recon
         losses['recon'] = loss_recon.data[0]
 
