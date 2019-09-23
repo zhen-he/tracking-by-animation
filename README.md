@@ -5,7 +5,7 @@
 
 
 **NOTE**:
-- A new implementation (with pytorch 1.2) will soon be available.
+- A new implementation (with pytorch 1.3) will soon be available.
 - Recently the DukeMTMC website was disabled and would hopefully be recovered in the future.
 
 
