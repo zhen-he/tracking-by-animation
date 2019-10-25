@@ -19,7 +19,7 @@
 #### a) Qualitative results
 
 <p align="center">
-    <a href="https://vimeo.com/295500734" target="_blank"><img src="imgs/mnist.gif" width="500"/></a><br/>
+    <a href="https://youtu.be/5UNi8mhsmR4" target="_blank"><img src="imgs/mnist.gif" width="500"/></a><br/>
     Click it to watch longer &uarr;<br/>
     Left: input. Middle: reconstruction. Right: memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
@@ -37,7 +37,7 @@
 #### a) Qualitative results
 
 <p align="center">
-    <a href="https://vimeo.com/295500903" target="_blank"><img src="imgs/sprite.gif" width="500"/></a><br/>
+    <a href="https://youtu.be/hrkus5brD_U" target="_blank"><img src="imgs/sprite.gif" width="500"/></a><br/>
     Click it to watch longer &uarr;<br/>
     Left: input. Middle: reconstruction. Right: memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
@@ -56,7 +56,7 @@
 #### a) Qualitative results
 
 <p align="center">
-    <a href="https://vimeo.com/295501114" target="_blank"><img src="imgs/duke.gif" width="500"/></a><br/>
+    <a href="https://youtu.be/9EAXPfkuA8U" target="_blank"><img src="imgs/duke.gif" width="500"/></a><br/>
     Click it to watch longer &uarr;<br/>
     Rows 1 and 4: input. Row 2 and 5: reconstruction. Rows 3 and 6: output.
 </p>
