@@ -20,7 +20,7 @@
 
 <p align="center">
     <a href="https://youtu.be/5UNi8mhsmR4" target="_blank"><img src="imgs/mnist.gif" width="500"/></a><br/>
-    Click it to watch longer &uarr;<br/>
+    &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
     Left: input. Middle: reconstruction. Right: memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
 
@@ -38,7 +38,7 @@
 
 <p align="center">
     <a href="https://youtu.be/hrkus5brD_U" target="_blank"><img src="imgs/sprite.gif" width="500"/></a><br/>
-    Click it to watch longer &uarr;<br/>
+    &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
     Left: input. Middle: reconstruction. Right: memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
 
@@ -57,7 +57,7 @@
 
 <p align="center">
     <a href="https://youtu.be/9EAXPfkuA8U" target="_blank"><img src="imgs/duke.gif" width="500"/></a><br/>
-    Click it to watch longer &uarr;<br/>
+    &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
     Rows 1 and 4: input. Row 2 and 5: reconstruction. Rows 3 and 6: output.
 </p>
 
