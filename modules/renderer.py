@@ -3,7 +3,6 @@ import os.path as path
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import modules.submodules as smd
 import modules.utils as utils
 
@@ -19,7 +18,7 @@ class Renderer(nn.Module):
         o = self.o
         Y_b = kwargs['Y_b'].view(-1, o.D, o.H, o.W) if 'Y_b' in kwargs.keys() else None
         if o.task == 'mnist':
-            Y_s = Variable(Y_s.data.clone().fill_(1))
+            Y_s = Y_s.data.clone().fill_(1)
 
         # Get sampling grid
         y_e = y_e.view(-1, o.dim_y_e, 1, 1) # NTO * dim_y_e * 1 * 1
@@ -30,8 +29,8 @@ class Renderer(nn.Module):
         # Spatial transform
         Y_s = Y_s.view(-1, 1, o.h, o.w) * y_e # NTO * 1 * h * w 
         Y_a = Y_a.view(-1, o.D, o.h, o.w) * Y_s # NTO * D * h * w
-        X_s = nn.functional.grid_sample(Y_s, grid) # NTO * 1 * H * W
-        X_a = nn.functional.grid_sample(Y_a, grid) # NTO * D * H * W
+        X_s = nn.functional.grid_sample(Y_s, grid, align_corners=False) # NTO * 1 * H * W
+        X_a = nn.functional.grid_sample(Y_a, grid, align_corners=False) # NTO * D * H * W
 
         # Permute, and generate layers
         X_s = X_s.view(-1, o.O, 1 * o.H * o.W) # NT * O * 1HW
@@ -46,7 +45,7 @@ class Renderer(nn.Module):
         # Reconstruct iteratively
         X_s_split = torch.unbind(X_s.view(-1, o.dim_y_l, 1, o.H, o.W), 1)  # NT * 1 * H * W
         X_a_split = torch.unbind(X_a.view(-1, o.dim_y_l, o.D, o.H, o.W), 1) # NT * D * H * W
-        X_r = Y_b if Y_b is not None else Variable(X_a_split[0].data.clone().zero_()) # NT * D * H * W
+        X_r = Y_b if Y_b is not None else X_a_split[0].data.clone().zero_() # NT * D * H * W
         for i in range(0, o.dim_y_l):
             # X_r = X_r + X_s_split[i] * (X_a_split[i] - X_r)
             X_r = X_r * (1 - X_s_split[i]) + X_a_split[i]
@@ -67,7 +66,7 @@ class Renderer(nn.Module):
         scale = 1 + o.zeta_s*scale
         ratio = o.zeta_r[0] + o.zeta_r[1]*ratio
         ratio_sqrt = ratio.sqrt()
-        area = 1 / (scale * scale)
+        area = scale * scale
         h_new = o.h * scale * ratio_sqrt
         w_new = o.w * scale / ratio_sqrt
         scale_x = o.W / w_new
@@ -75,7 +74,7 @@ class Renderer(nn.Module):
         if o.bg == 0:
             trans_x = (1 - (o.w*2/3)/o.W) * trans_x
             trans_y = (1 - (o.h*2/3)/o.H) * trans_y
-        zero = Variable(trans_x.data.clone().zero_()) # N * 1
+        zero = trans_x.data.clone().zero_() # N * 1
         trans_mat = torch.cat((scale_x, zero, scale_x * trans_x, zero, scale_y, 
                                scale_y * trans_y), 1).view(-1, 2, 3) # N * 2 * 3
 
@@ -93,5 +92,5 @@ class Renderer(nn.Module):
             self.i += 1
 
         # Generate sampling grid
-        grid = nn.functional.affine_grid(trans_mat, torch.Size((trans_mat.size(0), o.D, o.H, o.W))) # N * H * W * 2
+        grid = nn.functional.affine_grid(trans_mat, torch.Size((trans_mat.size(0), o.D, o.H, o.W)), align_corners=False) # N * H * W * 2
         return grid, area

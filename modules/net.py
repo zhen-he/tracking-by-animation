@@ -2,7 +2,6 @@ import os.path as path
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 from modules.feature_extractor import FeatureExtractor
 from modules.tracker_array import TrackerArray
 from modules.renderer import Renderer
@@ -25,7 +24,8 @@ class Net(nn.Module):
         self.tracker_array = TrackerArray(o)
         self.renderer = nn.DataParallel(Renderer(o), device_ids)
         self.renderer_vis = Renderer(o)
-        self.loss_calculator = nn.DataParallel(LossCalculator(o), device_ids)
+        # self.loss_calculator = nn.DataParallel(LossCalculator(o), device_ids)
+        self.loss_calculator = LossCalculator(o)
         
         # Coordinates
         zeros = torch.Tensor(o.N, o.T, 1, o.H, o.W).cuda().fill_(0) # N * T * 1 * H * W
@@ -51,7 +51,7 @@ class Net(nn.Module):
             Y_b_seq = kwargs['X_bg_seq']
 
         # Extract features
-        X_seq_cat = torch.cat((X_seq, Variable(self.coor.clone())), 2) # N * T * D+2 * H * W
+        X_seq_cat = torch.cat((X_seq, self.coor.clone()), 2) # N * T * D+2 * H * W
         C_o_seq = self.feature_extractor(X_seq_cat) # N * T * M * R
         C_o_seq = smd.CheckBP('C_o_seq')(C_o_seq)
 
@@ -107,12 +107,12 @@ class Net(nn.Module):
                 show_dict['org'] = kwargs['X_org']
         att_hor = 1
         if att_hor == 1:
-            att = self.tracker_array.ntm.att.permute(0, 2, 1, 3).contiguous().view(o.T, self.tracker_array.ntm.ntm_cell.ha, -1)
-            mem = self.tracker_array.ntm.mem.permute(0, 2, 1, 3).contiguous().view(o.T, self.tracker_array.ntm.ntm_cell.ha, -1)
+            att = self.tracker_array.ntm.att.permute(0, 2, 1, 3).reshape(o.T, self.tracker_array.ntm.ntm_cell.ha, -1)
+            mem = self.tracker_array.ntm.mem.permute(0, 2, 1, 3).reshape(o.T, self.tracker_array.ntm.ntm_cell.ha, -1)
         else:
             att = self.tracker_array.ntm.att.view(o.T, -1, self.tracker_array.ntm.ntm_cell.wa)
             mem = self.tracker_array.ntm.mem.view(o.T, -1, self.tracker_array.ntm.ntm_cell.wa)
-        mem_max = 4#mem.max()
+        mem_max = 1.8 if o.task == 'mnist' else 3.8 #mem.max()
         mem_min = 0#mem.min()
         # print(mem_min, mem_max)
         mem = (mem - mem_min) / (mem_max - mem_min + 1e-20)
@@ -132,14 +132,14 @@ class Net(nn.Module):
 
             # Enforce to show object bounding boxes on the image
             if o.metric == 1 and "no_mem" not in o.exp_config:
-                y_e = Variable(kwargs['y_e'].data[n:n+1].clone().round())
+                y_e = kwargs['y_e'].data[n:n+1].clone().round()
             else:
-                y_e = Variable(kwargs['y_e'].data[n:n+1].clone())
-            y_e_vis = y_e#Variable(kwargs['y_e'].data[n:n+1].clone().fill_(1))
-            y_l = Variable(kwargs['y_l'].data[n:n+1].clone())
-            y_p = Variable(kwargs['y_p'].data[n:n+1].clone())
-            Y_s = Variable(kwargs['Y_s'].data[n:n+1].clone()) # 1 * T * O * 1 * h * w
-            Y_a = Variable(kwargs['Y_a'].data[n:n+1].clone()) # 1 * T * O * D * h * w
+                y_e = kwargs['y_e'].data[n:n+1].clone()
+            y_e_vis = y_e#kwargs['y_e'].data[n:n+1].clone().fill_(1)
+            y_l = kwargs['y_l'].data[n:n+1].clone()
+            y_p = kwargs['y_p'].data[n:n+1].clone()
+            Y_s = kwargs['Y_s'].data[n:n+1].clone() # 1 * T * O * 1 * h * w
+            Y_a = kwargs['Y_a'].data[n:n+1].clone() # 1 * T * O * D * h * w
             Y_s.data[:, :, :, :, 0, :].fill_(1)
             Y_s.data[:, :, :, :, -1, :].fill_(1)
             Y_s.data[:, :, :, :, :, 0].fill_(1)
@@ -151,7 +151,7 @@ class Net(nn.Module):
             if o.bg == 0:
                 X_r_vis, _a = self.renderer_vis(y_e_vis, y_l, y_p, Y_s, Y_a) # 1 * T * D * H * W
             else:
-                Y_b = Variable(kwargs['Y_b'].data[n:n+1].clone())
+                Y_b = kwargs['Y_b'].data[n:n+1].clone()
                 X_r_vis, _a = self.renderer_vis(y_e_vis, y_l, y_p, Y_s, Y_a, Y_b=Y_b) # 1 * T * D * H * W
             img = X_r_vis.data[0, t, 0:o.D].permute(1, 2, 0).clamp(0, 1)
             if o.v == 1:
@@ -163,11 +163,11 @@ class Net(nn.Module):
             # Objects
             y_e, Y_s, Y_a = y_e.data[0, t], Y_s.data[0, t], Y_a.data[0, t] # O * D * h * w
             if o.task == 'mnist':
-                Y_o = (y_e.view(-1, 1, 1, 1) * Y_a).permute(2, 0, 3, 1).contiguous().view(o.h, o.O*o.w, o.D)
-                Y_o_v = (y_e.view(-1, 1, 1, 1) * Y_a).permute(0, 2, 3, 1).contiguous().view(o.O*o.h, o.w, o.D)
+                Y_o = (y_e.view(-1, 1, 1, 1) * Y_a).permute(2, 0, 3, 1).reshape(o.h, o.O*o.w, o.D)
+                Y_o_v = (y_e.view(-1, 1, 1, 1) * Y_a).permute(0, 2, 3, 1).reshape(o.O*o.h, o.w, o.D)
             else:
-                Y_o = (y_e.view(-1, 1, 1, 1) * Y_s * Y_a).permute(2, 0, 3, 1).contiguous().view(o.h, o.O*o.w, o.D)
-                Y_o_v = (y_e.view(-1, 1, 1, 1) * Y_a * Y_a).permute(0, 2, 3, 1).contiguous().view(o.O*o.h, o.w, o.D)
+                Y_o = (y_e.view(-1, 1, 1, 1) * Y_s * Y_a).permute(2, 0, 3, 1).reshape(o.h, o.O*o.w, o.D)
+                Y_o_v = (y_e.view(-1, 1, 1, 1) * Y_a * Y_a).permute(0, 2, 3, 1).reshape(o.O*o.h, o.w, o.D)
             if o.v == 1:
                 utils.imshow(Y_o, h, w * o.O, 'Y_o', 1)
             else:
@@ -199,7 +199,7 @@ class Net(nn.Module):
 
 
     def load_states(self, *args):
-        states = [Variable(self.states[arg].clone()) for arg in args]
+        states = [self.states[arg].clone() for arg in args]
         return states if len(states) > 1 else states[0]
 
 

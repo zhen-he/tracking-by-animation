@@ -64,25 +64,25 @@ oid = 0 # object id, 0-based
 with open(path.join(result_metric_dir, txt_name), "w") as file:
     for f in range(0, F):
         for o in range(0, O):
-            conf_prev = confs[f,o]
-            conf = confs[f+1,o]
+            conf_prev = confs[f,o].item()
+            conf = confs[f+1,o].item()
             if conf >= conf_thresh:             # tracking
                 if conf_prev < conf_thresh:     # new tracking
                     oids[o] = oid
                     oid += 1
                     if arg.task == 'duke':
-                        file.write("%d,%d,%d,%.3f,%.3f,%.3f,%.3f\n" % (cam, oids[o], fmap[f], res[f,o,0], 
-                                                                       res[f,o,1], res[f,o,2], res[f,o,3]))
+                        file.write("%d,%d,%d,%.3f,%.3f,%.3f,%.3f\n" % (cam, oids[o].item(), fmap[f], res[f,o,0].item(), 
+                                                                       res[f,o,1].item(), res[f,o,2].item(), res[f,o,3].item()))
                 else:                           # maintain tracking
                     if arg.task == 'duke':      # interpolate sampled results
-                        d = [(res[f,o,i] - res[f-1,o,i]) / duke_sample_step for i in range(0, 4)]
+                        d = [(res[f,o,i].item() - res[f-1,o,i].item()) / duke_sample_step for i in range(0, 4)]
                         for i in range(duke_sample_step-1, -1, -1):
                             file.write("%d,%d,%d,%.3f,%.3f,%.3f,%.3f\n" % 
-                                       (cam, oids[o], fmap[f]-i, res[f,o,0]-i*d[0], res[f,o,1]-i*d[1], 
-                                        res[f,o,2]-i*d[2], res[f,o,3]-i*d[3]))
+                                       (cam, oids[o].item(), fmap[f]-i, res[f,o,0].item()-i*d[0], res[f,o,1].item()-i*d[1], 
+                                        res[f,o,2].item()-i*d[2], res[f,o,3].item()-i*d[3]))
                 if arg.task != 'duke':
                     file.write("%d,%d,%.3f,%.3f,%.3f,%.3f,-1,-1,-1,-1\n" %
-                               (f+1, oids[o]+1, res[f,o,0], res[f,o,1], res[f,o,2], res[f,o,3]))
+                               (f+1, oids[o].item()+1, res[f,o,0].item(), res[f,o,1].item(), res[f,o,2].item(), res[f,o,3].item()))
         print("Processing... %.1f%%" % ((f+1)/F*100))
 
 

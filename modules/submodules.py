@@ -1,14 +1,13 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import functions.submodules as F
 
 
 
 
 def norm_grad(input, max_norm):
-    if not input.volatile:
+    if input.requires_grad:
         def norm_hook(grad):
             N = grad.size(0) # batch number
             norm = grad.view(N, -1).norm(p=2, dim=1) + 1e-6
@@ -21,12 +20,12 @@ def norm_grad(input, max_norm):
 
 
 def clip_grad(input, value):
-    if not input.volatile:
+    if  input.requires_grad:
         input.register_hook(lambda g: g.clamp(-value, value))
 
 
 def scale_grad(input, scale):
-    if not input.volatile:
+    if input.requires_grad:
         input.register_hook(lambda g: g * scale)
 
 
@@ -49,16 +48,17 @@ class CheckBP(nn.Module):
 
     def __init__(self, label='a', show=1):
         super(CheckBP, self).__init__()
-        self.check_bp = F.CheckBP(label, show)
+        self.label = label
+        self.show = show
 
     def forward(self, input):
-        return self.check_bp(input)
+        return F.CheckBP.apply(input, self.label, self.show)
 
 
 class Identity(nn.Module):
 
     def forward(self, input):
-        return F.Identity()(input)
+        return F.Identity.apply(input)
 
 
 class Log(nn.Module):
@@ -77,7 +77,7 @@ class Round(nn.Module):
     It forwards by rounding the input, and backwards with the original output gradients
     """
     def forward(self, input):
-        return F.Round()(input)
+        return F.Round.apply(input)
 
 
 class StraightThrough(nn.Module):
@@ -86,7 +86,7 @@ class StraightThrough(nn.Module):
     It forwards by sampling from the input probablilities, and backwards with the original output gradients
     """
     def forward(self, input):
-        return F.StraightThrough()(input)
+        return F.StraightThrough.apply(input)
 
 
 class ArgMax(nn.Module):
@@ -96,7 +96,7 @@ class ArgMax(nn.Module):
     """
     def forward(self, input):
         assert input.dim() == 2, 'only support 2D arg max'
-        return F.ArgMax()(input)
+        return F.ArgMax.apply(input)
 
 
 class STGumbelSigmoid(nn.Module):
@@ -109,8 +109,8 @@ class STGumbelSigmoid(nn.Module):
 
     def forward(self, mu):
         log = self.log
-        u1 = Variable(torch.rand(mu.size()).cuda())
-        u2 = Variable(torch.rand(mu.size()).cuda())
+        u1 = torch.rand(mu.size()).cuda()
+        u2 = torch.rand(mu.size()).cuda()
         a = (log(mu) - log(-log(u1)) - log(1 - mu) + log(-log(u2))) / self.tao
         return self.round(a.sigmoid())
 
@@ -126,7 +126,7 @@ class STGumbelSoftmax(nn.Module):
 
     def forward(self, mu):
         log = self.log
-        u = Variable(torch.rand(mu.size()).cuda()) # N * K
+        u = torch.rand(mu.size()).cuda() # N * K
         # mu = CheckBP('mu')(mu)
         a = (log(mu) - log(-log(u))) / self.tao
         # a = CheckBP('a')(a)
@@ -136,7 +136,7 @@ class STGumbelSoftmax(nn.Module):
 class GaussianSampler(nn.Module):
 
     def forward(self, mu, log_var):
-        standard_normal = Variable(torch.randn(mu.size()).cuda())
+        standard_normal = torch.randn(mu.size()).cuda()
         return mu + (log_var * 0.5).exp() * standard_normal
 
 
@@ -151,7 +151,7 @@ class PermutationMatrixCalculator(nn.Module):
 
     def forward(self, input):
         assert input.dim() == 2, 'only support 2D input'
-        return F.PermutationMatrixCalculator(self.descend)(input)
+        return F.PermutationMatrixCalculator.apply(input, self.descend)
 
 
 class Conv(nn.Module):
@@ -186,10 +186,10 @@ class Conv(nn.Module):
             if self.dp == 1:
                 H = getattr(self, 'dp'+str(i))(H)
             # if i == self.layer_num - 1:
-            #     print(H.data[0, :, H.size(2)//2, H.size(3)//2].contiguous().view(1, -1))
+            #     print(H.data[0, :, H.size(2)//2, H.size(3)//2].reshape(1, -1))
             H = self.tranform(H)
             # if i == self.layer_num - 1:
-            #     print(H.data[0, :, H.size(2)//2, H.size(3)//2].contiguous().view(1, -1))
+            #     print(H.data[0, :, H.size(2)//2, H.size(3)//2].reshape(1, -1))
         return H
 
 

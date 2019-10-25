@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import modules.submodules as smd
 import modules.utils as utils
 
@@ -13,7 +12,7 @@ class LossCalculator(nn.Module):
         super(LossCalculator, self).__init__()
         self.o = o
         self.log = smd.Log()
-        self.mse = nn.MSELoss(size_average=False)
+        self.mse = nn.MSELoss(reduction='sum')
         # self.bce_loss = nn.BCELoss(size_average=False)
 
 
@@ -28,20 +27,20 @@ class LossCalculator(nn.Module):
         else:
             loss_recon = self.mse(output, target)
         loss = loss_recon
-        losses['recon'] = loss_recon.data[0]
+        losses['recon'] = loss_recon.item()
 
         # Tightness loss
         lam_t = 0.1 if o.task == 'duke' else 13
         loss_tight = lam_t * area
         loss = loss + loss_tight
-        losses['tight'] = loss_tight.data[0]
+        losses['tight'] = loss_tight.item()
 
         # Entropy loss of y_e
         y_e = kwargs['y_e']  # N * T * O * 1
         lam_e = 1
         loss_entr = lam_e * self.calc_entropy(y_e)
         loss = loss + loss_entr
-        losses['entr'] = loss_entr.data[0]
+        losses['entr'] = loss_entr.item()
 
         # Appearance loss of Y_a
         if 'Y_a' in kwargs.keys():
@@ -52,13 +51,13 @@ class LossCalculator(nn.Module):
             loss_app_indiv = (app_sum_thresh - Y_a_sum_indiv).clamp(min=0)  # N * T * O
             loss_app = lam_a * loss_app_indiv.sum()  # 1
             loss = loss + loss_app
-            losses['loss_app'] = loss_app.data[0]
+            losses['loss_app'] = loss_app.item()
 
         if torch.cuda.current_device() == 0:
             msg = ""
             for k in losses.keys():
                 msg = msg + k + ": %.3f, "
-                losses[k] /= loss.data[0]
+                losses[k] /= loss.item()
             print(msg[:-2] % tuple(losses.values()))
         return loss
 

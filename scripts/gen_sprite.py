@@ -40,8 +40,11 @@ txt_name = task + 'gt.txt'
 metric_dir = 'metric' if arg.metric == 1 else ''
 output_dir = path.join('data', task, 'pt', metric_dir)
 output_input_dir = path.join(output_dir, 'input')
-utils.rmdir(output_input_dir); utils.mkdir(output_input_dir)
 output_gt_dir = path.join(output_dir, 'gt')
+if arg.v == 0:
+    utils.rmdir(output_input_dir); utils.mkdir(output_input_dir)
+    utils.rmdir(output_gt_dir); utils.mkdir(output_gt_dir)
+
 
 # color template
 color_num = 6
@@ -119,39 +122,39 @@ def process_batch(states, batch_id):
             if states[o][0] < appear_interval: # wait for interval frames 
                 states[o][0] = states[o][0] + 1
             elif states[o][0] == appear_interval: # allow birth
-                if unif[t][o] < birth_prob: # birth
+                if unif[t][o].item() < birth_prob: # birth
                     # shape and appearance
-                    color = color_id[t][o]
-                    shape = shape_id[t][o]
-                    scale = scales[t][o]
-                    ratio = ratios[t][o]
+                    color = color_id[t][o].item()
+                    shape = shape_id[t][o].item()
+                    scale = scales[t][o].item()
+                    ratio = ratios[t][o].item()
                     h_, w_ = round(h * scale * ratio), round(w * scale / ratio)
                     color_patch = torch.ByteTensor(h_, w_, D).fill_(1) * color_temp[color]
                     shape_patch = utils.imresize(shape_temp[shape], h_, w_)
                     # pose
-                    direction = direction_id[t][o]
+                    direction = direction_id[t][o].item()
                     position = position_id[t][o]
                     x1, y1, x2, y2 = None, None, None, None
                     if direction == 0:
-                        x1 = position[0]
+                        x1 = position[0].item()
                         y1 = m
-                        x2 = position[1]
+                        x2 = position[1].item()
                         y2 = H - 1 - m
                     elif direction == 1:
-                        x1 = position[0]
+                        x1 = position[0].item()
                         y1 = H - 1 - m
-                        x2 = position[1]
+                        x2 = position[1].item()
                         y2 = m
                     elif direction == 2:
                         x1 = m
-                        y1 = position[0]
+                        y1 = position[0].item()
                         x2 = W - 1 - m
-                        y2 = position[1]
+                        y2 = position[1].item()
                     else:
                         x1 = W - 1 - m
-                        y1 = position[0]
+                        y1 = position[0].item()
                         x2 = m
-                        y2 = position[1]
+                        y2 = position[1].item()
                     theta = math.atan2(y2 - y1, x2 - x1)
                     vx = velocity * math.cos(theta)
                     vy = velocity * math.sin(theta)

@@ -2,7 +2,6 @@ import os.path as path
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import modules.submodules as smd
 import modules.utils as utils
 
@@ -19,7 +18,7 @@ class TrackerArray(nn.Module):
         h_o_prev: N * O * dim_h_o
         y_e_prev: N * O * dim_y_e
         C_o_seq:  N * T * C2_1 * C2_2
-        '"""
+        """
         o = self.o
         # Split the input
         C_o = torch.unbind(C_o_seq, dim=1) # N * C2_1 * C2_2
@@ -67,13 +66,13 @@ class NTM(nn.Module):
         o = self.o
 
         if "no_tem" in o.exp_config:
-            h_o_prev = Variable(torch.zeros_like(h_o_prev).cuda())
-            y_e_prev = Variable(torch.zeros_like(y_e_prev).cuda())
+            h_o_prev = torch.zeros_like(h_o_prev).cuda()
+            y_e_prev = torch.zeros_like(y_e_prev).cuda()
 
         # Sort h_o_prev and y_e_prev
         if "no_rep" not in o.exp_config:
-            delta = torch.arange(0, o.O).cuda().unsqueeze(0) * 0.0001 # 1 * O
-            y_e_prev_mdf = y_e_prev.squeeze(2).round() - Variable(delta)
+            delta = torch.arange(0, o.O).float().cuda().unsqueeze(0) * 0.0001 # 1 * O
+            y_e_prev_mdf = y_e_prev.squeeze(2).round() - delta
             perm_mat = self.permutation_matrix_calculator(y_e_prev_mdf) # N * O * O
             h_o_prev = perm_mat.bmm(h_o_prev) # N * O * dim_h_o
             y_e_prev = perm_mat.bmm(y_e_prev) # N * O * dim_y_e
@@ -149,7 +148,7 @@ class NTM(nn.Module):
             y_e_mask = y_e_mask.lt(0.5).type_as(y_e_mask)
             y_e_mask = y_e_mask.cumsum(1)
             y_e_mask = y_e_mask.lt(0.5).type_as(y_e_mask)
-            ones = Variable(torch.ones(y_e_mask.size(0), 1, o.dim_y_e).cuda())  # N * 1 * dim_y_e
+            ones = torch.ones(y_e_mask.size(0), 1, o.dim_y_e).cuda()  # N * 1 * dim_y_e
             y_e_mask = torch.cat((ones, y_e_mask[:, 0:o.O-1]), dim=1)
             y_e_mask = perm_mat_inv.bmm(y_e_mask)  # N * O * dim_y_e
             h_o = y_e_mask * (h_o - h_o_prev) + h_o_prev  # N * O * dim_h_o

@@ -6,7 +6,6 @@ import numpy as np
 import math
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import cv2 as cv
 import modules.utils as utils
 from modules.net import Net
@@ -146,18 +145,17 @@ print('Parameter number: %.3f M' % (param_num / 1024 / 1024))
 # o.test_batch_num = o.train_batch_num
 # Data loader
 def load_data(batch_id, split):
-    volatile = False if split == 'train' else True
     # split = 'train'
     filename = split + '_' + str(batch_id) + '.pt'
     kwargs = {}
     X_seq = torch.load(path.join(data_dir, 'input', filename))
-    X_seq = Variable(X_seq.float().cuda().div_(255), volatile=volatile)
+    X_seq = X_seq.float().cuda().div_(255)
     if o.bg == 1:
         X_bg_seq = torch.load(path.join(data_dir, 'bg', filename))
-        kwargs['X_bg_seq'] = Variable(X_bg_seq.float().cuda().div_(255), volatile=volatile)
+        kwargs['X_bg_seq'] = X_bg_seq.float().cuda().div_(255)
         if o.metric == 1:
             X_org_seq = torch.load(path.join(data_dir, 'org', filename))
-            kwargs['X_org_seq'] = Variable(X_org_seq.float().cuda().div_(255), volatile=volatile)
+            kwargs['X_org_seq'] = X_org_seq.float().cuda().div_(255)
     return X_seq, kwargs
 
 
@@ -187,11 +185,16 @@ def backward(loss):
 # The forward and backward passes for an iteration
 def run_batch(batch_id, split):
     X_seq, kwargs = load_data(batch_id, split)
-    loss, forward_time = forward(X_seq, **kwargs)
-    backward_time = backward(loss) if split == 'train' else 0
+    if split == 'train':
+        loss, forward_time = forward(X_seq, **kwargs)
+        backward_time = backward(loss)
+    else:
+        with torch.no_grad():
+            loss, forward_time = forward(X_seq, **kwargs)
+        backward_time = 0
     if o.s == 1:
         print('Runtime: %.3fs' % (forward_time + backward_time))
-    return loss.data[0]
+    return loss.item()
 
 
 # The test function
