@@ -4,9 +4,8 @@
 - [Full version](https://www.researchgate.net/profile/Zhen_He21/publication/332246376_Tracking_by_Animation_Unsupervised_Learning_of_Multi-Object_Attentive_Trackers/links/5ca98b864585157bd32878f1/Tracking-by-Animation-Unsupervised-Learning-of-Multi-Object-Attentive-Trackers.pdf?origin=publication_detail) (with the appendix).
 
 
-**NOTE**:
-- A new implementation (with pytorch 1.3) will soon be available.
-- Recently the DukeMTMC website was disabled and would hopefully be recovered in the future.
+**NOTES**:
+- The DukeMTMC's official website was closed in 05/2019. It might be recovered in the future.
 
 
 ## 1. Results
@@ -70,8 +69,8 @@ Quantitative results are hosted at [https://motchallenge.net/results/DukeMTMCT](
 
 
 ## 2. Requirements
-- python 3.6
-- pytorch 0.3.1
+- Python 3.7
+- PyTorch 1.2/1.3/1.4
 - [py-motmetrics](https://github.com/cheind/py-motmetrics) (to evaluate tracking performances)
 
 
