@@ -111,6 +111,7 @@ python run.py --task mnist     # for mnist
 python run.py --task sprite    # for sprite
 python run.py --task duke      # for duke
 ```
+Alternatively, you can skip this stage by using our pre-trained models (under the `result/` directory).
 
 
 ### 3.3 Show training curves
