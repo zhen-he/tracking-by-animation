@@ -31,7 +31,7 @@ class LossCalculator(nn.Module):
 
         # Tightness loss
         lam_t = 0.1 if o.task == 'duke' else 13
-        loss_tight = lam_t * area
+        loss_tight = lam_t * area.sum()
         loss = loss + loss_tight
         losses['tight'] = loss_tight.item()
 
