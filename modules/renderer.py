@@ -24,7 +24,7 @@ class Renderer(nn.Module):
         y_e = y_e.view(-1, o.dim_y_e, 1, 1) # NTO * dim_y_e * 1 * 1
         y_p = y_p.view(-1, o.dim_y_p) # NTO * dim_y_p
         grid, area = self.get_sampling_grid(y_e, y_p) # NTO * H * W * 2
-        area = area.sum() / o.O
+        area = area.view(-1, o.T, o.O, 1).mean(2) # N * T * 1
 
         # Spatial transform
         Y_s = Y_s.view(-1, 1, o.h, o.w) * y_e # NTO * 1 * h * w 
