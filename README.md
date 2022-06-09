@@ -18,8 +18,8 @@
 #### a) Qualitative results
 
 <p align="center">
-    <a href="https://youtu.be/5UNi8mhsmR4"><img src="imgs/mnist.gif" width="500"/></a><br/>
-    &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
+    <a href="https://youtu.be/5UNi8mhsmR4" target="_blank"><img src="imgs/mnist.gif" width="500"/></a><br/>
+    Watch on <a href="https://youtu.be/5UNi8mhsmR4" target="_blank">YouTube</a><br/>
     <b>Left:</b> input.&emsp;<b>Middle:</b> reconstruction.&emsp;<b>Right:</b> memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
 
@@ -37,7 +37,7 @@
 
 <p align="center">
     <a href="https://youtu.be/hrkus5brD_U" target="_blank"><img src="imgs/sprite.gif" width="500"/></a><br/>
-    &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
+    Watch on <a href="https://youtu.be/hrkus5brD_U" target="_blank">YouTube</a><br/>
     <b>Left:</b> input.&emsp;<b>Middle:</b> reconstruction.&emsp;<b>Right:</b> memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
 
@@ -56,7 +56,7 @@
 
 <p align="center">
     <a href="https://youtu.be/9EAXPfkuA8U" target="_blank"><img src="imgs/duke.gif" width="500"/></a><br/>
-    &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
+    Watch on <a href="https://youtu.be/9EAXPfkuA8U" target="_blank">YouTube</a><br/>
     <b>Rows 1 and 4:</b> input.&emsp;<b>Rows 2 and 5:</b> reconstruction.&emsp;<b>Rows 3 and 6:</b> output.
 </p>
 
