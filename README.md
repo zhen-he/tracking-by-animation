@@ -18,7 +18,7 @@
 #### a) Qualitative results
 
 <p align="center">
-    <a href="https://youtu.be/5UNi8mhsmR4" target="_blank"><img src="imgs/mnist.gif" width="500"/></a><br/>
+    <a href="https://youtu.be/5UNi8mhsmR4"><img src="imgs/mnist.gif" width="500"/></a><br/>
     &uarr;&uarr;&uarr;&emsp;Click it for a longer watch on YouTube&emsp;&uarr;&uarr;&uarr;<br/>
     <b>Left:</b> input.&emsp;<b>Middle:</b> reconstruction.&emsp;<b>Right:</b> memory (Row 1), attention (Row 2), and output (Row 3).
 </p>
